@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Toaster } from './components/ui/toaster'
 import { useToast } from './hooks/use-toast'
-import { AICommandBar } from './components/AICommandBar'
+import { AIChatPanel } from './components/AIChatPanel'
 import { FormulaBar } from './components/FormulaBar'
 import { SpreadsheetGrid } from './components/SpreadsheetGrid'
-import { AISuggestionsPanel } from './components/AISuggestionsPanel'
 import { Button } from './components/ui/button'
 import { Badge } from './components/ui/badge'
 import { Separator } from './components/ui/separator'
@@ -174,21 +173,6 @@ function App() {
     })
   }, [selectedCell, handleCellValueChange, toast])
 
-  const handleSuggestionApply = useCallback((suggestion: string) => {
-    if (!selectedCell) return
-
-    if (suggestion.startsWith('=')) {
-      handleCellValueChange(selectedCell.row, selectedCell.col, suggestion)
-    } else {
-      // If it's a text suggestion, show it in a toast
-      toast({
-        title: "AI Suggestion",
-        description: suggestion,
-        duration: 4000
-      })
-    }
-  }, [selectedCell, handleCellValueChange, toast])
-
   const getCurrentCell = () => {
     if (!selectedCell) return null
     const cellId = getCellId(selectedCell.row, selectedCell.col)
@@ -270,14 +254,6 @@ function App() {
         </div>
       </header>
 
-      {/* AI Command Bar */}
-      <div className="bg-white border-b border-border px-6 py-4">
-        <AICommandBar
-          onFormulaGenerated={handleFormulaGenerated}
-          selectedCell={selectedCell ? getCellId(selectedCell.row, selectedCell.col) : undefined}
-        />
-      </div>
-
       {/* Formula Bar */}
       <FormulaBar
         selectedCell={selectedCell}
@@ -310,11 +286,11 @@ function App() {
           />
         </div>
 
-        {/* AI Suggestions Panel */}
-        <AISuggestionsPanel
+        {/* AI Chat Panel */}
+        <AIChatPanel
           cells={cells}
           selectedCell={selectedCell}
-          onApplySuggestion={handleSuggestionApply}
+          onFormulaGenerated={handleFormulaGenerated}
         />
       </div>
 
